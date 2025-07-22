@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar/Sidebar";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,10 +62,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <Script
+          id="stripe-js"
+          src="https://js.stripe.com/v3/"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className={inter.className}>
         <Providers>
-          <Sidebar />
-          {children}
+          <div className="flex h-screen">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto p-4">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>

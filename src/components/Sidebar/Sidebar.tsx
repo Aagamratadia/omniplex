@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "@/store/authSlice";
 import { useDisclosure } from "@nextui-org/modal";
+import { getStripe } from "@/lib/stripe-client";
 
 import Logo from "../../../public/Logo.svg";
 import Menu from "../../../public/svgs/Menu.svg";
@@ -33,6 +34,66 @@ const Sidebar = () => {
   const authState = useSelector(selectAuthState);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selected, setSelected] = useState("history");
+  
+  const handleCheckout = async () => {
+    try {
+      console.log('Initiating checkout...');
+      
+      // Check if we're in a browser environment
+      if (typeof window === 'undefined') {
+        console.error('Not in browser environment');
+        return;
+      }
+      
+      // Check if Stripe is properly loaded
+      if (!window.Stripe) {
+        console.error('Stripe.js has not loaded yet');
+        return;
+      }
+      
+      // Make the API request
+      const res = await fetch('/api/checkout_sessions', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('API Error:', res.status, errorText);
+        return;
+      }
+      
+      const data = await res.json();
+      console.log('Checkout session created:', data);
+      
+      if (!data.id) {
+        console.error('No session ID in response:', data);
+        return;
+      }
+      
+      // Initialize Stripe
+      const stripe = await getStripe();
+      if (!stripe) {
+        console.error('Failed to initialize Stripe');
+        return;
+      }
+      
+      // Redirect to Stripe Checkout
+      console.log('Redirecting to Stripe Checkout...');
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: data.id,
+      });
+      
+      if (error) {
+        console.error('Stripe redirect error:', error);
+      }
+      
+    } catch (error) {
+      console.error('Error during checkout:', error);
+    }
+  };
 
   const [width, setWidth] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
@@ -109,20 +170,27 @@ const Sidebar = () => {
         <div onClick={toggleSidebar} className={styles.menu}>
           <Image priority={true} src={Menu} alt="Menu" width={24} height={24} />
         </div>
-        <div
-          className={styles.titleButton}
-          style={{ opacity: isSidebarOpen ? 0 : 1 }}
-          onClick={handleNewChat}
-        >
-          <Image
-            priority={true}
-            src={Pen}
-            alt={"Pen"}
-            width={20}
-            height={20}
-            className={styles.titleButtonIcon}
-          />
-          <p className={styles.titleButtonText}>New Chat</p>
+        <div className={styles.headerButtons} style={{ opacity: isSidebarOpen ? 0 : 1 }}>
+          <div
+            className={`${styles.titleButton} ${styles.newChatButton}`}
+            onClick={handleNewChat}
+          >
+            <Image
+              priority={true}
+              src={Pen}
+              alt={"New Chat"}
+              width={20}
+              height={20}
+              className={styles.titleButtonIcon}
+            />
+            <p className={styles.titleButtonText}>New Chat</p>
+          </div>
+          <div
+            className={`${styles.titleButton} ${styles.upgradeButton}`}
+            onClick={handleCheckout}
+          >
+            <p className={styles.titleButtonText}>Upgrade</p>
+          </div>
         </div>
       </div>
       {isSidebarOpen && (

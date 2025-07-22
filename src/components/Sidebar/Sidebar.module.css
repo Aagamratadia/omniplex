@@ -31,8 +31,14 @@
   margin-top: 6px;
   cursor: pointer;
 }
+.headerButtons {
+  display: flex;
+  gap: 8px;
+  margin-right: 16px;
+}
+
 .titleButton {
-  margin: 8px;
+  margin: 8px 0;
   padding: 6px 12px;
   border-radius: 8px;
   display: flex;
@@ -40,8 +46,21 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #2e2e2e;
   transition: all 0.25s ease-in-out;
+}
+
+.newChatButton {
+  background-color: #2e2e2e;
+}
+
+.upgradeButton {
+  background-color: #3b82f6; /* Blue color for upgrade button */
+  color: white;
+  font-weight: 500;
+}
+
+.upgradeButton:hover {
+  background-color: #2563eb; /* Slightly darker blue on hover */
 }
 .titleButton:hover {
   background-color: #ffffff14;
