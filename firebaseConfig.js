@@ -3,14 +3,14 @@ import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
 // Firebase Config
-export const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+const firebaseConfig = {
+  apiKey: "AIzaSyAP3dAfubBY092_o2qZ5i08enG3V6u9SFw",
+  authDomain: "mozek-de335.firebaseapp.com",
+  projectId: "mozek-de335",
+  storageBucket: "mozek-de335.firebasestorage.app",
+  messagingSenderId: "193520243074",
+  appId: "1:193520243074:web:114c42d661e8b62bd27f9b",
+  measurementId: "G-MFVF3EPEML"
 };
 
 const app = initializeApp(firebaseConfig);
